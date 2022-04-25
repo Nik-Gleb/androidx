@@ -16,7 +16,8 @@
 
 
 import androidx.build.Publish
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
+import androidx.build.BuildOnServerKt
 
 plugins {
     id("AndroidXPlugin")
@@ -83,6 +84,13 @@ kotlin {
                 implementation(libs.kotlinTestJunit)
                 implementation(libs.truth)
                 implementation(project(":internal-testutils-truth"))
+            }
+        }
+    }
+    targets.all { target ->
+        if (target instanceof KotlinTargetWithTests) {
+            target.testRuns.all {
+                BuildOnServerKt.addToBuildOnServer(project, it.executionTask)
             }
         }
     }
