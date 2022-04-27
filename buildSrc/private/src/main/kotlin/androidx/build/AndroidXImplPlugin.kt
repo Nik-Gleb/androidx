@@ -670,6 +670,9 @@ class AndroidXImplPlugin : Plugin<Project> {
         // configured in the first place if the target is not enabled
         kmpExtension.testableTargets.all { kotlinTarget ->
             kotlinTarget.testRuns.all { kotlinTestRun ->
+                // Need to check for both KotlinNativeHostTest (to ensure it runs on host, not on
+                // an emulator or simulator) and also KotlinTaskTestRun to ensure it has a task.
+                // Unfortunately, there is no parent interface/class that covers both cases.
                 if (kotlinTestRun is KotlinNativeHostTestRun &&
                     kotlinTestRun is KotlinTaskTestRun<*, *>) {
                     project.addToBuildOnServer(kotlinTestRun.executionTask)
